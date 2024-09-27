@@ -1,0 +1,45 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>BF Debugger</title>
+        <script src="src/main.js" type="module" defer></script>
+        <style>
+            body {
+                background: black;
+                color: white;
+                font-family: sans-serif;
+            }
+
+            h4 {
+                font-size: 11px;
+                letter-spacing: 3px;
+                text-transform: uppercase;
+            }
+            pre {
+                border: 1px solid #fff3;
+                font-size: 20px;
+            }
+
+            #pgm {
+                width: 100%;
+                min-height: 300px;
+                resize: vertical;
+                background: inherit;
+                color: white;
+                border: 1px solid #ffff;
+            }
+        </style>
+    </head>
+    <body>
+        <h4>Program</h4>
+        <textarea id="pgm"></textarea>
+        <button id="run">Run</button>
+        <hr />
+        <h4>Output</h4>
+        <pre id="output"></pre>
+        <h4>Errors</h4>
+        <pre id="errors"></pre>
+    </body>
+</html>
