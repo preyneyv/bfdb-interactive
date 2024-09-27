@@ -30,16 +30,83 @@
                 color: white;
                 border: 1px solid #ffff;
             }
+            #instructions-header {
+                opacity: 0.5;
+            }
+            #instructions > div > :nth-child(1) {
+                opacity: 0.5;
+            }
+            #instructions > div > :nth-child(3) > span {
+                opacity: 0.3;
+            }
+
+            #instructions > div.active {
+                background: darkgreen;
+            }
+
+            #tape {
+                white-space: pre;
+            }
+
+            #tape > div > :first-child {
+                opacity: 0.5;
+            }
+
+            #tape .cell {
+                opacity: 0.5;
+            }
+            #tape .cell.touched {
+                opacity: 1;
+            }
+
+            #tape .char.blank {
+                color: rgba(255, 255, 255, 0.3);
+            }
+
+            #tape .active {
+                background: darkgreen;
+            }
         </style>
     </head>
     <body>
         <h4>Program</h4>
         <textarea id="pgm"></textarea>
-        <button id="run">Run</button>
+        <div>
+            <button id="run">Run</button>
+            <button id="run-slow">Run Slow</button>
+            <button id="run-slooow">Run SLOOOW</button>
+        </div>
         <hr />
         <h4>Output</h4>
         <pre id="output"></pre>
         <h4>Errors</h4>
         <pre id="errors"></pre>
+        <hr />
+        <div
+            style="
+                width: 100%;
+                display: grid;
+                grid-template-columns: 1fr 1fr;
+                gap: 10px;
+                font-family: monospace;
+            "
+        >
+            <div>
+                <h4>Instructions</h4>
+                <div>
+                    IP
+                    <span id="instruction-ptr"></span>
+                </div>
+                <div id="instructions"></div>
+            </div>
+            <div>
+                <h4>Tape</h4>
+                <div>
+                    HP
+                    <span id="tape-ptr"></span>
+                </div>
+                <div id="tape"></div>
+            </div>
+        </div>
     </body>
 </html>

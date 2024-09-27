@@ -1,14 +1,17 @@
-const BF_INSTRUCTIONS_STR = "+-<>.,[]";
-const BF_INSTRUCTIONS = {
-  ADD: 0, // +
-  SUB: 1, // -
-  LSH: 2, // <
-  RSH: 3, // >
-  CHO: 4, // .
-  CHI: 5, // ,
-  JWZ: 6, // [
-  JNZ: 7, // ]
+const BF_INSTRUCTIONS_ENUM = {
+  ADD: "+".charCodeAt(0), // +
+  SUB: "-".charCodeAt(0), // -
+  LSH: "<".charCodeAt(0), // <
+  RSH: ">".charCodeAt(0), // >
+  COU: ".".charCodeAt(0), // .
+  CIN: ",".charCodeAt(0), // ,
+  JWZ: "[".charCodeAt(0), // [
+  JNZ: "]".charCodeAt(0), // ]
 };
+
+export const BF_INSTRUCTIONS_MAP = Object.fromEntries(
+  Object.entries(BF_INSTRUCTIONS_ENUM).map(([key, value]) => [value, key]),
+);
 
 /**
  * Very simple lexer to skip all non-BF-instruction characters.
@@ -16,10 +19,9 @@ const BF_INSTRUCTIONS = {
  */
 export function* lexer(prog) {
   for (let i = 0; i < prog.length; i++) {
-    const curr = prog[i];
-    const idx = BF_INSTRUCTIONS_STR.indexOf(curr);
-    if (idx === -1) continue;
-    yield [idx, i];
+    const curr = prog.charCodeAt(i);
+    if (BF_INSTRUCTIONS_MAP[curr] === undefined) continue;
+    yield [curr, i];
   }
 }
 
@@ -33,10 +35,10 @@ export function tokenize(prog) {
   const instructions = [];
   const jumpStack = [];
   for (let [instr, idx] of lexer(prog)) {
-    if (instr === BF_INSTRUCTIONS.JWZ) {
+    if (instr === BF_INSTRUCTIONS_ENUM.JWZ) {
       jumpStack.push(instructions.length);
       instructions.push([instr, 0]);
-    } else if (instr === BF_INSTRUCTIONS.JNZ) {
+    } else if (instr === BF_INSTRUCTIONS_ENUM.JNZ) {
       const prev = jumpStack.pop();
       if (!prev) throw new Error(`Unmatched ] at ${idx}`);
       instructions.push([instr, prev]);
@@ -79,28 +81,28 @@ export function* interpret(instructions, peripherals) {
     yield ip;
     let [instr, arg] = instructions[ip];
     switch (instr) {
-      case BF_INSTRUCTIONS.ADD:
+      case BF_INSTRUCTIONS_ENUM.ADD:
         peripherals.tape.write(peripherals.tape.read() + arg);
         break;
-      case BF_INSTRUCTIONS.SUB:
+      case BF_INSTRUCTIONS_ENUM.SUB:
         peripherals.tape.write(peripherals.tape.read() - arg);
         break;
-      case BF_INSTRUCTIONS.LSH:
+      case BF_INSTRUCTIONS_ENUM.LSH:
         peripherals.tape.move(-arg);
         break;
-      case BF_INSTRUCTIONS.RSH:
+      case BF_INSTRUCTIONS_ENUM.RSH:
         peripherals.tape.move(arg);
         break;
-      case BF_INSTRUCTIONS.CHO:
+      case BF_INSTRUCTIONS_ENUM.COU:
         while (arg--) peripherals.stdio.stdout(peripherals.tape.read());
         break;
-      case BF_INSTRUCTIONS.CHI:
+      case BF_INSTRUCTIONS_ENUM.CIN:
         while (arg--) peripherals.tape.write(peripherals.stdio.stdin.next());
         break;
-      case BF_INSTRUCTIONS.JWZ:
+      case BF_INSTRUCTIONS_ENUM.JWZ:
         if (peripherals.tape.read() === 0) ip = arg;
         break;
-      case BF_INSTRUCTIONS.JNZ:
+      case BF_INSTRUCTIONS_ENUM.JNZ:
         if (peripherals.tape.read() !== 0) ip = arg;
         break;
       default:
